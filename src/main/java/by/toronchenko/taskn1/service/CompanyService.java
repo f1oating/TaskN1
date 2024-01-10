@@ -12,7 +12,6 @@ public class CompanyService {
 
     @Autowired
     private CompanyCrudRepository companyCrudRepository;
-    private final static CompanyService INSTANCE = new CompanyService();
 
     public Company saveCompany(Company company){
         return companyCrudRepository.save(company);
@@ -34,7 +33,4 @@ public class CompanyService {
         companyCrudRepository.delete(company);
     }
 
-    public static CompanyService getInstance(){
-        return INSTANCE;
-    }
 }
