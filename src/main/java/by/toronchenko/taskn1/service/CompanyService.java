@@ -22,7 +22,7 @@ public class CompanyService {
         return companyCrudRepository.findById(id);
     }
 
-    public Iterable<Company> findAllUsers(){
+    public Iterable<Company> findAllCompanies(){
         return companyCrudRepository.findAll();
     }
 

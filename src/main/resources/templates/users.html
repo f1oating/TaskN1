@@ -7,7 +7,7 @@
 <body>
 <div>
     <div th:if="${not #lists.isEmpty(users)}">
-        <h2>Product List</h2>
+        <h2>User List</h2>
         <table>
             <tr>
                 <th>Name</th>
@@ -17,8 +17,8 @@
                 <th>Update</th>
             </tr>
             <tr th:each="user : ${users}">
-                <td th:text="${user.name}">descirption</td>
-                <td th:text="${user.company.name}">price</td>
+                <td th:text="${user.name}">Name</td>
+                <td th:text="${user.company.name}">Company name</td>
                 <td><a th:href="${ '/user/' + user.id}">View</a></td>
                 <td><a th:href="${ '/delete/' + user.id}">Delete</a></td>
                 <td><a th:href="${ '/updateuser/' + user.id}">Update</a></td>
@@ -27,7 +27,8 @@
 
     </div>
 
-    <a href="/createuser">Create</a>
+    <a href="/createuser">Create User</a><br>
+    <a href="/createcompany">Create Company</a><br>
 </div>
 </body>
 </html>
