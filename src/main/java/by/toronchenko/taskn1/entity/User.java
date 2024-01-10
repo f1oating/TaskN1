@@ -7,8 +7,8 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(of = "name")
+@ToString(exclude = "company")
 @Entity(name = "users")
 public class User {
 
@@ -17,7 +17,7 @@ public class User {
     private Long id;
     private String name;
     private String password;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
 
