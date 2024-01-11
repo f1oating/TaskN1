@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${'Update ' + company.name}"></title>
+    <link rel="stylesheet" href="../static/updatecompany.css">
 </head>
 <body>
-    <h1>Update Company:</h1>
-    <form th:action="${ '/updatecompany/' + company.company_id}" method="post">
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" th:placeholder="${company.name}">
-        </div>
-        <button type="submit">Update</button>
-        <div>
-            <p th:each="error : ${errors}" th:text="${error.getMessage}"/>
-        </div>
-    </form>
+    <div class="container">
+        <h1>Update Company:</h1>
+        <form th:action="${ '/updatecompany/' + company.company_id}" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" th:placeholder="${company.name}">
+            </div>
+            <button type="submit">Update</button>
+            <div>
+                <p th:each="error : ${errors}" th:text="${error.getMessage}"/>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

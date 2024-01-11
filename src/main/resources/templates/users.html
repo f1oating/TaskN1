@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Users</title>
+    <link rel="stylesheet" href="../static/users.css">
 </head>
 <body>
-<div>
+<div class="container">
     <div th:if="${not #lists.isEmpty(users)}">
         <h2>User List</h2>
         <table>
@@ -27,8 +28,10 @@
 
     </div>
 
-    <a href="/createuser">Create User</a><br>
-    <a href="/companies">Show companies</a>
+    <div class="link-container">
+        <a class="create-user" href="/createuser">Create User</a><br>
+        <a class="show-companies" href="/companies">Show companies</a><br>
+    </div>
 </div>
 </body>
 </html>
