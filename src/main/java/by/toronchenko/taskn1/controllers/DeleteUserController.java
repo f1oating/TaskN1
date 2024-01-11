@@ -18,4 +18,5 @@ public class DeleteUserController {
         userService.deleteUserById(id);
         return "redirect:/users";
     }
+
 }

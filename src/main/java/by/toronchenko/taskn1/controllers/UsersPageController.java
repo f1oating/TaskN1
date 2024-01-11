@@ -17,4 +17,5 @@ public class UsersPageController {
         model.addAttribute("users", userService.findAllUsers());
         return "users";
     }
+
 }
