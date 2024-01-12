@@ -17,14 +17,14 @@
                 </tr>
                 <tr th:each="company : ${companies}">
                     <td th:text="${company.name}">Name</td>
-                    <td><a th:href="${ '/deletecompany/' + company.company_id}">Delete</a></td>
-                    <td><a th:href="${ '/updatecompany/' + company.company_id}">Update</a></td>
+                    <td><a th:href="${ '/company/deleteCompany/' + company.company_id}">Delete</a></td>
+                    <td><a th:href="${ '/company/updateCompany/' + company.company_id}">Update</a></td>
                 </tr>
             </table>
         </div>
         <div class="link-container">
-            <a href="/createcompany">Create Company</a><br>
-            <a href="/users">Show users</a><br>
+            <a href="/company/createCompany">Create Company</a><br>
+            <a href="/user/users">Show users</a><br>
         </div>
     </div>
 </body>

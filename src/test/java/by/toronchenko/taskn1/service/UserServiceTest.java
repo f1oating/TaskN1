@@ -1,8 +1,13 @@
 package by.toronchenko.taskn1.service;
 
+import by.toronchenko.taskn1.dto.UserDto;
 import by.toronchenko.taskn1.entity.Company;
 import by.toronchenko.taskn1.entity.User;
-import by.toronchenko.taskn1.repositories.UserCrudRepository;
+import by.toronchenko.taskn1.repositories.UserRepository;
+import by.toronchenko.taskn1.util.exception.NoCompanyFoundException;
+import by.toronchenko.taskn1.util.exception.NoUserFoundException;
+import by.toronchenko.taskn1.validators.UserValidator;
+import by.toronchenko.taskn1.validators.ValidationResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,16 +16,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
 	@Mock
-	private UserCrudRepository userCrudRepository;
+	private UserRepository userRepository;
+	@Mock
+	private UserValidator userValidator;
 	@InjectMocks
 	private UserService userService;
 
@@ -30,20 +39,24 @@ class UserServiceTest {
 				.name("Test")
 				.build();
 		User user = User.builder()
+				.id(1L)
 				.name("Testoviy")
 				.password("test")
 				.build();
 		company.addUser(user);
 
-		Mockito.when(userCrudRepository.save(user)).thenReturn(user);
+		UserDto userDto = new UserDto(1L, "Testoviy", "test", company, new ArrayList<>());
 
-		User result = userService.saveUser(user);
+		Mockito.when(userValidator.isValid(user)).thenReturn(new ValidationResult());
+		Mockito.when(userRepository.save(user)).thenReturn(user);
 
-		assertEquals(user, result);
+		UserDto result = userService.saveUser(user);
+
+		assertEquals(userDto, result);
 	}
 
 	@Test
-	void testFindUserById() {
+	void testFindUserById() throws NoUserFoundException {
 		Company company = Company.builder()
 				.company_id(1L)
 				.name("Test")
@@ -55,11 +68,11 @@ class UserServiceTest {
 				.build();
 		company.addUser(user);
 
-		Mockito.when(userCrudRepository.findById(1L)).thenReturn(Optional.of(user));
+		Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-		Optional<User> optionalUser = userService.findUserById(1L);
+		User result = userService.findUserById(1L);
 
-		assertEquals(user, optionalUser.get());
+		assertEquals(user, result);
 	}
 
 	@Test
@@ -83,7 +96,7 @@ class UserServiceTest {
 		company2.addUser(user2);
 		List<User> users = List.of(user, user2);
 
-		Mockito.when(userCrudRepository.findAll()).thenReturn(users);
+		Mockito.when(userRepository.findAll()).thenReturn(users);
 
 		Iterable<User> result = userService.findAllUsers();
 
@@ -91,13 +104,12 @@ class UserServiceTest {
 	}
 
 	@Test
-	void testDeleteUserById(){
-		userService.deleteUserById(1L);
-		Mockito.verify(userCrudRepository, Mockito.times(1)).deleteById(1L);
+	void testDeleteUserById() {
+		assertThrows(NoUserFoundException.class, () -> userService.deleteUserById(1L));
 	}
 
 	@Test
-	void testDeleteUser(){
+	void testDeleteUser() {
 		Company company = Company.builder()
 				.name("Test")
 				.build();
@@ -107,8 +119,7 @@ class UserServiceTest {
 				.build();
 		company.addUser(user);
 
-		userService.deleteUser(user);
-		Mockito.verify(userCrudRepository, Mockito.times(1)).delete(user);
+		assertThrows(NoUserFoundException.class, () -> userService.deleteUser(user));
 	}
 
 }

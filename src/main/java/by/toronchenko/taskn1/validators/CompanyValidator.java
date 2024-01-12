@@ -1,9 +1,7 @@
 package by.toronchenko.taskn1.validators;
 
 import by.toronchenko.taskn1.entity.Company;
-import by.toronchenko.taskn1.entity.User;
-import by.toronchenko.taskn1.repositories.CompanyCrudRepository;
-import by.toronchenko.taskn1.repositories.UserCrudRepository;
+import by.toronchenko.taskn1.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class CompanyValidator implements Validator<Company>{
 
     @Autowired
-    private CompanyCrudRepository companyCrudRepository;
+    private CompanyRepository companyRepository;
 
     @Override
     public ValidationResult isValid(Company company) {
@@ -29,7 +27,7 @@ public class CompanyValidator implements Validator<Company>{
     }
 
     private boolean isExist(Company company){
-        return companyCrudRepository.findAll().stream().anyMatch(c ->
+        return companyRepository.findAll().stream().anyMatch(c ->
                 (c.getName().equals(company.getName())) && (c.getCompany_id() != company.getCompany_id())
         );
     }

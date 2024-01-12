@@ -1,7 +1,7 @@
 package by.toronchenko.taskn1.validators;
 
 import by.toronchenko.taskn1.entity.User;
-import by.toronchenko.taskn1.repositories.UserCrudRepository;
+import by.toronchenko.taskn1.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class UserValidator implements Validator<User>{
 
     @Autowired
-    private UserCrudRepository userCrudRepository;
+    private UserRepository userRepository;
 
     @Override
     public ValidationResult isValid(User user) {
@@ -33,7 +33,7 @@ public class UserValidator implements Validator<User>{
     }
 
     private boolean isExist(User user){
-        return userCrudRepository.findAll().stream().anyMatch(u ->
+        return userRepository.findAll().stream().anyMatch(u ->
             (u.getName().equals(user.getName())) && (u.getId() != user.getId())
         );
     }

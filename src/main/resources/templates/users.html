@@ -21,16 +21,16 @@
                 <td th:text="${user.name}">Name</td>
                 <td th:text="${user.company.name}">Company name</td>
                 <td><a th:href="${ '/user/' + user.id}">View</a></td>
-                <td><a th:href="${ '/delete/' + user.id}">Delete</a></td>
-                <td><a th:href="${ '/updateuser/' + user.id}">Update</a></td>
+                <td><a th:href="${ '/user/deleteUser/' + user.id}">Delete</a></td>
+                <td><a th:href="${ '/user/updateUser/' + user.id}">Update</a></td>
             </tr>
         </table>
 
     </div>
 
     <div class="link-container">
-        <a class="create-user" href="/createuser">Create User</a><br>
-        <a class="show-companies" href="/companies">Show companies</a><br>
+        <a class="create-user" href="/user/createUser">Create User</a><br>
+        <a class="show-companies" href="/company/companies">Show companies</a><br>
     </div>
 </div>
 </body>
