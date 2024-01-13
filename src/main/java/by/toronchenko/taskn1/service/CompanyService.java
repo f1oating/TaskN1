@@ -25,19 +25,14 @@ public class CompanyService {
 
     public CompanyDto saveCompany(Company company){
         ValidationResult validationResult = companyValidator.isValid(company);
-        if(validationResult.isValid()){
-            return new CompanyDto(company.getCompany_id(), company.getName(), validationResult.getErrors());
-        }
-        return toCompanyDto(companyRepository.save(company));
+        return !validationResult.isValid()
+                ? toCompanyDto(companyRepository.save(company))
+                : new CompanyDto(null, null, validationResult.getErrors());
     }
 
     public Company findCompanyById(Long id) throws NoCompanyFoundException {
-        Optional<Company> companyOptional = companyRepository.findById(id);
-        if(companyOptional.isPresent()){
-            return companyOptional.get();
-        }else{
-            throw new NoCompanyFoundException();
-        }
+        return this.companyRepository.findById(id)
+                .orElseThrow(NoCompanyFoundException::new);
     }
 
     public Iterable<Company> findAllCompanies(){
@@ -45,21 +40,15 @@ public class CompanyService {
     }
 
     public void deleteCompanyById(Long id) throws NoCompanyFoundException {
-        Optional<Company> companyOptional = companyRepository.findById(id);
-        if(companyOptional.isPresent()){
-            companyRepository.deleteById(id);
-        }else{
-            throw new NoCompanyFoundException();
-        }
+        this.companyRepository.findById(id)
+                .orElseThrow(NoCompanyFoundException::new);
+        this.companyRepository.deleteById(id);
     }
 
     public void deleteCompany(Company company) throws NoCompanyFoundException {
-        Optional<Company> companyOptional = companyRepository.findById(company.getCompany_id());
-        if(companyOptional.isPresent()){
-            companyRepository.delete(company);
-        }else{
-            throw new NoCompanyFoundException();
-        }
+        this.companyRepository.findById(company.getCompany_id())
+                .orElseThrow(NoCompanyFoundException::new);
+        companyRepository.delete(company);
     }
 
     private CompanyDto toCompanyDto(Company company){

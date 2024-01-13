@@ -3,6 +3,7 @@ package by.toronchenko.taskn1.service;
 import by.toronchenko.taskn1.dto.UserDto;
 import by.toronchenko.taskn1.entity.User;
 import by.toronchenko.taskn1.repositories.UserRepository;
+import by.toronchenko.taskn1.util.exception.NoCompanyFoundException;
 import by.toronchenko.taskn1.util.exception.NoUserFoundException;
 import by.toronchenko.taskn1.validators.UserValidator;
 import by.toronchenko.taskn1.validators.ValidationResult;
@@ -23,19 +24,14 @@ public class UserService {
 
     public UserDto saveUser(User user){
         ValidationResult validationResult = userValidator.isValid(user);
-        if(validationResult.isValid()){
-            return new UserDto(null, null, null, null, validationResult.getErrors());
-        }
-        return toUserDto(userRepository.save(user));
+        return !validationResult.isValid()
+                ? toUserDto(userRepository.save(user))
+                : new UserDto(null, null, null, null, validationResult.getErrors());
     }
 
     public User findUserById(Long id) throws NoUserFoundException {
-        Optional<User> userOptional = userRepository.findById(id);
-        if(userOptional.isPresent()){
-            return userOptional.get();
-        }else{
-            throw new NoUserFoundException();
-        }
+        return this.userRepository.findById(id)
+                .orElseThrow(NoUserFoundException::new);
     }
 
     public Iterable<User> findAllUsers(){
@@ -43,21 +39,15 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) throws NoUserFoundException {
-        Optional<User> userOptional = userRepository.findById(id);
-        if(userOptional.isPresent()){
-            userRepository.deleteById(id);
-        }else{
-            throw new NoUserFoundException();
-        }
+        this.userRepository.findById(id)
+                .orElseThrow(NoUserFoundException::new);
+        this.userRepository.deleteById(id);
     }
 
     public void deleteUser(User user) throws NoUserFoundException {
-        Optional<User> userOptional = userRepository.findById(user.getId());
-        if(userOptional.isPresent()){
-            userRepository.delete(user);
-        }else{
-            throw new NoUserFoundException();
-        }
+        this.userRepository.findById(user.getId())
+                .orElseThrow(NoUserFoundException::new);
+        this.userRepository.delete(user);
     }
 
     private UserDto toUserDto(User user){
