@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user_name}"></title>
+    <link rel="stylesheet" href="../static/user.css">
+</head>
+<body>
+<div class="container">
+    <h1>Your name: <span th:text="${user_name}"/></h1>
+    <h2>Your company: <span th:text="${company_name}"/></h2>
+    <a href="/user/users">Back</a>
+</div>
+</body>
+</html>

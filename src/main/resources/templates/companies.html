@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Companies</title>
+    <link rel="stylesheet" href="../static/companies.css">
+</head>
+<body>
+    <div class="container">
+        <div th:if="${not #lists.isEmpty(companies)}">
+            <h2>Company List</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Delete</th>
+                    <th>Update</th>
+                </tr>
+                <tr th:each="company : ${companies}">
+                    <td th:text="${company.name}">Name</td>
+                    <td><a th:href="${ '/company/deleteCompany/' + company.company_id}">Delete</a></td>
+                    <td><a th:href="${ '/company/updateCompany/' + company.company_id}">Update</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="link-container">
+            <a href="/company/createCompany">Create Company</a><br>
+            <a href="/user/users">Show users</a><br>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create user</title>
+    <link rel="stylesheet" href="../static/createUser.css">
+</head>
+<body>
+    <div class="container">
+        <h1>New User:</h1>
+        <form action="/user/createUser" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="form-group">
+                <label for="company">Выберите компанию:</label>
+                <select id="company" name="company">
+                    <option th:each="company : ${companies}" th:value="${company.company_id}" th:text="${company.name}"></option>
+                </select>
+            </div>
+            <button type="submit">Create</button>
+            <div>
+                <p th:each="error : ${errors}" th:text="${error.getMessage()}"/>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
