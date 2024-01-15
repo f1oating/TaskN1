@@ -14,7 +14,7 @@ public class CompanyValidator implements Validator<Company>{
     @Override
     public ValidationResult isValid(Company company) {
         var validationResult = new ValidationResult();
-        if(company.getName().isEmpty()){
+        if(company.getName().trim().isEmpty()){
             validationResult.add(Error.of("invalid.name", "Name is empty!"));
         }
         if(company.getName().length() > 16){

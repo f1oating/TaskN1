@@ -14,13 +14,13 @@ public class UserValidator implements Validator<User>{
     @Override
     public ValidationResult isValid(User user) {
         var validationResult = new ValidationResult();
-        if(user.getName().isEmpty()){
+        if(user.getName().trim().isEmpty()){
             validationResult.add(Error.of("invalid.name", "Name is empty!"));
         }
         if(user.getName().length() > 16){
             validationResult.add(Error.of("invalid.name", "Name to long!"));
         }
-        if(user.getPassword().isEmpty()){
+        if(user.getPassword().trim().isEmpty()){
             validationResult.add(Error.of("invalid.password", "Password is empty!"));
         }
         if(user.getPassword().length() > 16){

@@ -8,10 +8,13 @@ import by.toronchenko.taskn1.util.exception.NoUserFoundException;
 import by.toronchenko.taskn1.validators.UserValidator;
 import by.toronchenko.taskn1.validators.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,22 +32,26 @@ public class UserService {
                 : new UserDto(null, null, null, null, validationResult.getErrors());
     }
 
-    public User findUserById(Long id) throws NoUserFoundException {
+    public User findUserById(Long id) {
         return this.userRepository.findById(id)
                 .orElseThrow(NoUserFoundException::new);
     }
 
-    public Iterable<User> findAllUsers(){
+    public List<User> findAllUsers(){
         return userRepository.findAll();
     }
 
-    public void deleteUserById(Long id) throws NoUserFoundException {
+    public Page<User> findPageUsersByName(PageRequest pageRequest, String name) {
+        return name != null ? userRepository.findAllByName(pageRequest, name) : userRepository.findAll(pageRequest);
+    }
+
+    public void deleteUserById(Long id) {
         this.userRepository.findById(id)
                 .orElseThrow(NoUserFoundException::new);
         this.userRepository.deleteById(id);
     }
 
-    public void deleteUser(User user) throws NoUserFoundException {
+    public void deleteUser(User user) {
         this.userRepository.findById(user.getId())
                 .orElseThrow(NoUserFoundException::new);
         this.userRepository.delete(user);

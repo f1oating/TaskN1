@@ -7,6 +7,11 @@
 </head>
 <body>
 <div class="container">
+    <form action="/user/users" method="get">
+        <label for="name">Find by name:</label>
+        <input type="text" id="name" name="name">
+        <button type="submit">Find</button>
+    </form>
     <div th:if="${not #lists.isEmpty(users)}">
         <h2>User List</h2>
         <table>
@@ -17,7 +22,7 @@
                 <th>Delete</th>
                 <th>Update</th>
             </tr>
-            <tr th:each="user : ${users}">
+            <tr th:each="user : ${users.content}">
                 <td th:text="${user.name}">Name</td>
                 <td th:text="${user.company.name}">Company name</td>
                 <td><a th:href="${ '/user/' + user.id}">View</a></td>
@@ -25,7 +30,20 @@
                 <td><a th:href="${ '/user/updateUser/' + user.id}">Update</a></td>
             </tr>
         </table>
+    </div>
 
+    <div>
+        <ul>
+            <li th:if="${users.hasPrevious()}">
+                <a th:href="${'/user/users?page=' + (users.getNumber() - 1)}">&lt; Previous</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}">
+                <a th:href="${'/user/users?page=' + i}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${users.hasNext()}">
+                <a th:href="${'/user/users?page=' + (users.getNumber() + 1)}">Next &gt;</a>
+            </li>
+        </ul>
     </div>
 
     <div class="link-container">
