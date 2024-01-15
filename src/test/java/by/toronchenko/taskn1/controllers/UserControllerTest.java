@@ -1,5 +1,6 @@
 package by.toronchenko.taskn1.controllers;
 
+import by.toronchenko.taskn1.validators.Error;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,10 +49,21 @@ public class UserControllerTest {
     }
 
     @Test
+    void testShowNoFoundUser() throws Exception {
+        this.mockMvc.perform(get("/user/10"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void testUpdateUserPage() throws Exception {
         this.mockMvc.perform(get("/user/updateUser/1")).andExpect(status().isOk());
+    }
+
+    @Test
+    void testUpdateUserPageNotFound() throws Exception {
+        this.mockMvc.perform(get("/user/updateUser/10")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -62,10 +78,35 @@ public class UserControllerTest {
     }
 
     @Test
+    void testUpdateNoFoundUser() throws Exception {
+        this.mockMvc.perform(get("/user/updateUser/10")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void testUpdateNoValidUser() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(post("/user/updateUser/1")
+                .param("name", "")
+                .param("password", "")
+                .param("company", "1"))
+                .andReturn();
+        List<Error> errors = new ArrayList<>();
+        errors.add(Error.of("invalid.name", "Name is empty !"));
+        errors.add(Error.of("invalid.password", "Password is empty!"));
+        assertEquals(errors.size(), ((List<Error>) mvcResult.getModelAndView().getModel().get("errors")).size());
+    }
+
+    @Test
     @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void testDeleteUser() throws Exception {
         this.mockMvc.perform(get("/user/deleteUser/1")).andExpect(redirectedUrl("/user/users"));
+    }
+
+    @Test
+    void testDeleteNoFoundUser() throws Exception {
+        this.mockMvc.perform(get("/user/updateUser/10")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -83,6 +124,21 @@ public class UserControllerTest {
                         .param("password", "test")
                         .param("company", "1"))
                 .andExpect(redirectedUrl("/user/users"));
+    }
+
+    @Test
+    @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void testCreateNoValidUser() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(post("/user/createUser")
+                .param("name", "")
+                .param("password", "")
+                .param("company", "1"))
+                .andReturn();
+        List<Error> errors = new ArrayList<>();
+        errors.add(Error.of("invalid.name", "Name is empty !"));
+        errors.add(Error.of("invalid.password", "Password is empty!"));
+        assertEquals(errors.size(), ((List<Error>) mvcResult.getModelAndView().getModel().get("errors")).size());
     }
 
 }

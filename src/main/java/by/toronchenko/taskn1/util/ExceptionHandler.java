@@ -12,7 +12,7 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNoFoundException(NoUserFoundException u) {
+    public String handleNoFoundException(NotFoundException u) {
         return "pageNotFound";
     }
 

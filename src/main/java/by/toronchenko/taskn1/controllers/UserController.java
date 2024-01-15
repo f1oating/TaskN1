@@ -28,7 +28,7 @@ public class UserController {
     private CompanyService companyService;
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, Model model) throws NoUserFoundException {
+    public String showUser(@PathVariable Long id, Model model) {
         User user = userService.findUserById(id);
         model.addAttribute("user_name", user.getName());
         model.addAttribute("company_name", user.getCompany().getName());
@@ -53,7 +53,7 @@ public class UserController {
             @RequestParam String name,
             @RequestParam String password,
             @RequestParam Long company
-    ) throws NoCompanyFoundException {
+    ) {
         User user = User.builder()
                 .name(name)
                 .password(password)
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/updateUser/{id}")
-    public String updateUserPage(@PathVariable Long id, @RequestParam(required = false) List<Error> errors, Model model) throws NoUserFoundException {
+    public String updateUserPage(@PathVariable Long id, @RequestParam(required = false) List<Error> errors, Model model) {
         User user = userService.findUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("companies", companyService.findAllCompanies());
@@ -77,7 +77,7 @@ public class UserController {
     @PostMapping("/updateUser/{id}")
     public ModelAndView updateUser(
             @RequestParam String name, @RequestParam String password, @PathVariable Long id, @RequestParam Long company
-    ) throws NoUserFoundException, NoCompanyFoundException {
+    ) {
         User user = userService.findUserById(id);
         Company userCompany = companyService.findCompanyById(company);
         user.setName(name);
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     @GetMapping("/deleteUser/{id}")
-    public String deleteUser(@PathVariable Long id) throws NoUserFoundException {
+    public String deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
         return "redirect:/user/users";
     }
