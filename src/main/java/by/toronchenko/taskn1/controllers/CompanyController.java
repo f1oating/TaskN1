@@ -46,7 +46,7 @@ public class CompanyController {
     }
 
     @GetMapping("/updateCompany/{id}")
-    public String updateUserPage(@PathVariable Long id, @RequestParam(required = false) List<Error> errors, Model model) throws NoCompanyFoundException {
+    public String updateUserPage(@PathVariable Long id, @RequestParam(required = false) List<Error> errors, Model model) {
         Company company = companyService.findCompanyById(id);
         model.addAttribute("errors", errors);
         model.addAttribute("company", company);
@@ -56,7 +56,7 @@ public class CompanyController {
     @PostMapping("/updateCompany/{id}")
     public ModelAndView updateUser(
             @RequestParam String name, @PathVariable Long id
-    ) throws NoCompanyFoundException {
+    ) {
         Company company = companyService.findCompanyById(id);
         company.setName(name);
         CompanyDto companyDto = companyService.saveCompany(company);
@@ -67,7 +67,7 @@ public class CompanyController {
     }
 
     @GetMapping("/deleteCompany/{id}")
-    public String deleteUser(@PathVariable Long id) throws NoCompanyFoundException {
+    public String deleteUser(@PathVariable Long id) {
         companyService.deleteCompanyById(id);
         return "redirect:/company/companies";
     }

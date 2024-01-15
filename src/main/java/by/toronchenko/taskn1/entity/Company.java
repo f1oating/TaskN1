@@ -19,6 +19,7 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long company_id;
+    @Column(unique = true, nullable = false)
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     @Builder.Default

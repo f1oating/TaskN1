@@ -1,11 +1,14 @@
 package by.toronchenko.taskn1.service;
 
 import by.toronchenko.taskn1.dto.CompanyDto;
+import by.toronchenko.taskn1.dto.UserDto;
 import by.toronchenko.taskn1.entity.Company;
 import by.toronchenko.taskn1.entity.User;
 import by.toronchenko.taskn1.repositories.CompanyRepository;
 import by.toronchenko.taskn1.util.exception.NoCompanyFoundException;
+import by.toronchenko.taskn1.util.exception.NoUserFoundException;
 import by.toronchenko.taskn1.validators.CompanyValidator;
+import by.toronchenko.taskn1.validators.Error;
 import by.toronchenko.taskn1.validators.ValidationResult;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CompanyServiceTest {
@@ -33,7 +38,7 @@ class CompanyServiceTest {
     private CompanyService companyService;
 
     @Test
-    void testSaveCompany(){
+    void testSaveCompany() {
         Company company = Company.builder()
                 .company_id(1L)
                 .name("Test")
@@ -54,7 +59,24 @@ class CompanyServiceTest {
     }
 
     @Test
-    void testFindCompanyById() throws NoCompanyFoundException {
+    void testSaveNotValidCompany() {
+        Company company = Company.builder()
+                .name("")
+                .build();
+        ValidationResult validationResult = new ValidationResult();
+        validationResult.add(Error.of("invalid.name", "Name is empty!"));
+
+        CompanyDto companyDto = new CompanyDto(null, null, validationResult.getErrors());
+
+        when(companyValidator.isValid(company)).thenReturn(validationResult);
+
+        CompanyDto result = companyService.saveCompany(company);
+
+        assertEquals(companyDto, result);
+    }
+
+    @Test
+    void testFindCompanyById() {
         Company company = Company.builder()
                 .company_id(1L)
                 .name("Test")
@@ -71,6 +93,12 @@ class CompanyServiceTest {
         Company result = companyService.findCompanyById(1L);
 
         assertEquals(company, result);
+    }
+
+    @Test
+    void testFindCompanyByIdWithExcpetion() {
+        when(companyRepository.findById(10L)).thenThrow(NoCompanyFoundException.class);
+        assertThrows(NoCompanyFoundException.class, () -> companyService.findCompanyById(10L));
     }
 
     @Test
@@ -103,22 +131,43 @@ class CompanyServiceTest {
     }
 
     @Test
-    void testDeleteCompanyById() throws NoCompanyFoundException {
+    void testDeleteCompanyById() {
+        Company company = Company.builder()
+                .company_id(1L)
+                .name("Test")
+                .build();
 
-        assertThrows(NoCompanyFoundException.class, () -> companyService.deleteCompanyById(1L));
+        when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
+        companyService.deleteCompanyById(1L);
+        verify(companyRepository, Mockito.times(1)).deleteById(1L);
     }
 
     @Test
-    void testDeleteCompany() throws NoCompanyFoundException {
+    void testDeleteCompanyByIdWithException() {
+        when(companyRepository.findById(10L)).thenThrow(NoCompanyFoundException.class);
+        assertThrows(NoCompanyFoundException.class, () -> companyService.deleteCompanyById(10L));
+    }
+
+    @Test
+    void testDeleteCompany() {
         Company company = Company.builder()
+                .company_id(1L)
                 .name("Test")
                 .build();
-        User user = User.builder()
-                .name("Testoviy")
-                .password("test")
-                .build();
-        company.addUser(user);
 
+        when(companyRepository.findById(company.getCompany_id())).thenReturn(Optional.of(company));
+        companyService.deleteCompany(company);
+        verify(companyRepository, Mockito.times(1)).delete(company);
+    }
+
+    @Test
+    void testDeleteCompanyWithException() {
+        Company company = Company.builder()
+                .company_id(10L)
+                .name("Test")
+                .build();
+
+        when(companyRepository.findById(company.getCompany_id())).thenThrow(NoCompanyFoundException.class);
         assertThrows(NoCompanyFoundException.class, () -> companyService.deleteCompany(company));
     }
 }
