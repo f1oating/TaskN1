@@ -31,13 +31,13 @@
         <div>
             <ul>
                 <li th:if="${companies.hasPrevious()}">
-                    <a th:href="${'/company/companies?page=' + (companies.getNumber() - 1)}">&lt; Previous</a>
+                    <a th:href="${'/company/companies?page=' + (companies.getNumber() - 1) + '&name=' + name}">&lt; Previous</a>
                 </li>
-                <li th:each="i : ${#numbers.sequence(0, companies.totalPages - 1)}">
-                    <a th:href="${'/company/companies?page=' + i}" th:text="${i + 1}"></a>
+                <li th:each="i : ${maxPages}">
+                    <a th:href="${'/company/companies?page=' + i + '&name=' + name}" th:text="${i + 1}"></a>
                 </li>
                 <li th:if="${companies.hasNext()}">
-                    <a th:href="${'/company/companies?page=' + (companies.getNumber() + 1)}">Next &gt;</a>
+                    <a th:href="${'/company/companies?page=' + (companies.getNumber() + 1) + '&name=' + name}">Next &gt;</a>
                 </li>
             </ul>
         </div>

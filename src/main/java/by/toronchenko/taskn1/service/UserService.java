@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class UserService {
@@ -42,7 +44,7 @@ public class UserService {
     }
 
     public Page<User> findPageUsersByName(PageRequest pageRequest, String name) {
-        return name != null ? userRepository.findAllByName(pageRequest, name) : userRepository.findAll(pageRequest);
+        return name != null && !name.isEmpty() ? userRepository.findAllByName(pageRequest, name) : userRepository.findAll(pageRequest);
     }
 
     public void deleteUserById(Long id) {
@@ -63,6 +65,12 @@ public class UserService {
                 user.getPassword(),
                 user.getCompany(),
                 new ArrayList<>());
+    }
+
+    public List<Integer> pageSlicer(int page, int totalPages) {
+        return IntStream.rangeClosed(Math.max(0, page), Math.min(totalPages - 1, page + 2))
+                .boxed()
+                .collect(Collectors.toList());
     }
 
 }

@@ -39,9 +39,11 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String showUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(required = false) String name, Model model){
+    public String showUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "") String name, Model model){
         Page<User> users = userService.findPageUsersByName(PageRequest.of(page, 5), name);
         model.addAttribute("users", users);
+        model.addAttribute("maxPages", userService.pageSlicer(users.getNumber(), users.getTotalPages()));
+        model.addAttribute("name", name);
         return "users";
     }
 
@@ -100,4 +102,5 @@ public class UserController {
         userService.deleteUserById(id);
         return "redirect:/user/users";
     }
+
 }

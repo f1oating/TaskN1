@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +131,54 @@ class CompanyServiceTest {
         Iterable<Company> result = companyService.findAllCompanies();
 
         assertEquals(companies, result);
+    }
+
+    @Test
+    void testFindPageCompaniesByName() {
+        Company company = Company.builder()
+                .name("Test")
+                .build();
+        User user = User.builder()
+                .name("Testoviy")
+                .password("test")
+                .build();
+        company.addUser(user);
+        List<Company> companies = new ArrayList<>();
+        companies.add(company);
+
+        when(companyRepository.findAllByName(PageRequest.of(1, 5), "Test"))
+                .thenReturn(new PageImpl<>(companies));
+        Page<Company> result = companyService.findPageCompaniesByName(PageRequest.of(1, 5), "Test");
+        assertEquals(companies, result.stream().toList());
+    }
+
+    @Test
+    void testFindPageUsersByEmptyName() {
+        Company company = Company.builder()
+                .name("Test")
+                .build();
+        User user = User.builder()
+                .name("Testoviy")
+                .password("test")
+                .build();
+        company.addUser(user);
+        Company company2 = Company.builder()
+                .name("Test")
+                .build();
+        User user2 = User.builder()
+                .name("Testoviy")
+                .password("test")
+                .build();
+        company.addUser(user);
+        company2.addUser(user2);
+        List<Company> companies = new ArrayList<>();
+        companies.add(company);
+        companies.add(company2);
+
+        when(companyRepository.findAll(PageRequest.of(1, 5)))
+                .thenReturn(new PageImpl<>(companies));
+        Page<Company> result = companyService.findPageCompaniesByName(PageRequest.of(1, 5), "");
+        assertEquals(companies, result.stream().toList());
     }
 
     @Test

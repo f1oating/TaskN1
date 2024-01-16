@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class CompanyService {
@@ -43,7 +45,7 @@ public class CompanyService {
     }
 
     public Page<Company> findPageCompaniesByName(PageRequest pageRequest, String name) {
-        return name != null ? companyRepository.findAllByName(pageRequest, name) : companyRepository.findAll(pageRequest);
+        return name != null && !name.isEmpty() ? companyRepository.findAllByName(pageRequest, name) : companyRepository.findAll(pageRequest);
     }
 
     public void deleteCompanyById(Long id) {
@@ -62,6 +64,12 @@ public class CompanyService {
         return new CompanyDto(company.getCompany_id(),
                 company.getName(),
                 new ArrayList<>());
+    }
+
+    public List<Integer> pageSlicer(int page, int totalPages) {
+        return IntStream.rangeClosed(Math.max(0, page), Math.min(totalPages - 1, page + 1))
+                .boxed()
+                .collect(Collectors.toList());
     }
 
 }

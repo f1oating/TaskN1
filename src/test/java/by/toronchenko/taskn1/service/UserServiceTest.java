@@ -16,6 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 
 import java.util.ArrayList;
@@ -134,6 +137,54 @@ class UserServiceTest {
 		Iterable<User> result = userService.findAllUsers();
 
 		assertEquals(users, result);
+	}
+
+	@Test
+	void testFindPageUsersByName() {
+		Company company = Company.builder()
+				.name("Test")
+				.build();
+		User user = User.builder()
+				.name("Testoviy")
+				.password("test")
+				.build();
+		company.addUser(user);
+		List<User> users = new ArrayList<>();
+		users.add(user);
+
+		when(userRepository.findAllByName(PageRequest.of(1, 5), "Testoviy"))
+				.thenReturn(new PageImpl<>(users));
+		Page<User> result = userService.findPageUsersByName(PageRequest.of(1, 5), "Testoviy");
+		assertEquals(users, result.stream().toList());
+	}
+
+	@Test
+	void testFindPageUsersByEmptyName() {
+		Company company = Company.builder()
+				.name("Test")
+				.build();
+		User user = User.builder()
+				.name("Testoviy")
+				.password("test")
+				.build();
+		company.addUser(user);
+		Company company2 = Company.builder()
+				.name("Test")
+				.build();
+		User user2 = User.builder()
+				.name("Testoviy")
+				.password("test")
+				.build();
+		company.addUser(user);
+		company2.addUser(user2);
+		List<User> users = new ArrayList<>();
+		users.add(user);
+		users.add(user2);
+
+		when(userRepository.findAll(PageRequest.of(1, 5)))
+				.thenReturn(new PageImpl<>(users));
+		Page<User> result = userService.findPageUsersByName(PageRequest.of(1, 5), "");
+		assertEquals(users, result.stream().toList());
 	}
 
 	@Test

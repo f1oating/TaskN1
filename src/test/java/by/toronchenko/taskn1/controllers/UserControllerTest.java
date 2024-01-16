@@ -1,11 +1,16 @@
 package by.toronchenko.taskn1.controllers;
 
+import by.toronchenko.taskn1.entity.Company;
+import by.toronchenko.taskn1.entity.User;
 import by.toronchenko.taskn1.validators.Error;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -14,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,9 +40,10 @@ public class UserControllerTest {
 
     @Test
     void testShowUsers() throws Exception {
+        PageImpl<User> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 5), 0);
         this.mockMvc.perform(get("/user/users"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("users", new ArrayList<>()));
+                .andExpect(model().attribute("users", page));
     }
 
     @Test

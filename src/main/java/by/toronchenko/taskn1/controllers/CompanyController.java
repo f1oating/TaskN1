@@ -25,9 +25,11 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping("/companies")
-    public String showUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(required = false) String name, Model model){
+    public String showUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "") String name, Model model){
         Page<Company> companies = companyService.findPageCompaniesByName(PageRequest.of(page, 5), name);
         model.addAttribute("companies", companies);
+        model.addAttribute("maxPages", companyService.pageSlicer(companies.getNumber(), companies.getTotalPages()));
+        model.addAttribute("name", name);
         return "companies";
     }
 
