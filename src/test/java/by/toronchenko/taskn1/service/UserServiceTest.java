@@ -152,7 +152,7 @@ class UserServiceTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 
-		when(userRepository.findAllByName(PageRequest.of(1, 5), "Testoviy"))
+		when(userRepository.findDistinctFirstByName(PageRequest.of(1, 5), "Testoviy"))
 				.thenReturn(new PageImpl<>(users));
 		Page<User> result = userService.findPageUsersByName(PageRequest.of(1, 5), "Testoviy");
 		assertEquals(users, result.stream().toList());

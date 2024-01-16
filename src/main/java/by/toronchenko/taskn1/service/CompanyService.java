@@ -45,7 +45,7 @@ public class CompanyService {
     }
 
     public Page<Company> findPageCompaniesByName(PageRequest pageRequest, String name) {
-        return name != null && !name.isEmpty() ? companyRepository.findAllByName(pageRequest, name) : companyRepository.findAll(pageRequest);
+        return name != null && !name.isEmpty() ? companyRepository.findDistinctFirstByName(pageRequest, name) : companyRepository.findAll(pageRequest);
     }
 
     public void deleteCompanyById(Long id) {

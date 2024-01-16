@@ -146,7 +146,7 @@ class CompanyServiceTest {
         List<Company> companies = new ArrayList<>();
         companies.add(company);
 
-        when(companyRepository.findAllByName(PageRequest.of(1, 5), "Test"))
+        when(companyRepository.findDistinctFirstByName(PageRequest.of(1, 5), "Test"))
                 .thenReturn(new PageImpl<>(companies));
         Page<Company> result = companyService.findPageCompaniesByName(PageRequest.of(1, 5), "Test");
         assertEquals(companies, result.stream().toList());

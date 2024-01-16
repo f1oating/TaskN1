@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public Page<User> findPageUsersByName(PageRequest pageRequest, String name) {
-        return name != null && !name.isEmpty() ? userRepository.findAllByName(pageRequest, name) : userRepository.findAll(pageRequest);
+        return name != null && !name.isEmpty() ? userRepository.findDistinctFirstByName(pageRequest, name) : userRepository.findAll(pageRequest);
     }
 
     public void deleteUserById(Long id) {
