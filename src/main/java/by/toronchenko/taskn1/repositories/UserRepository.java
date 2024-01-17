@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT DISTINCT e FROM users e WHERE e.name LIKE ?1%")
     public Page<User> findDistinctFirstByName(PageRequest pageRequest, String name);
 
+    public Optional<User> findByName(String name);
+
 }

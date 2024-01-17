@@ -10,17 +10,17 @@ import by.toronchenko.taskn1.validators.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -73,4 +73,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return this.userRepository.findByName(username)
+                .map(user -> new org.springframework.security.core.userdetails.User(
+                        user.getName(),
+                        user.getPassword(),
+                        Collections.singleton(user.getRole())
+                ))
+                .orElseThrow(NoUserFoundException::new);
+    }
+    
 }
