@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
         ValidationResult validationResult = userValidator.isValid(user);
         return !validationResult.isValid()
                 ? toUserDto(userRepository.save(user))
-                : new UserDto(null, null, null, null, validationResult.getErrors());
+                : new UserDto(null, null, null, null, null, validationResult.getErrors());
     }
 
     public User findUserById(Long id) {
@@ -63,6 +63,7 @@ public class UserService implements UserDetailsService {
         return new UserDto(user.getId(),
                 user.getName(),
                 user.getPassword(),
+                user.getRole(),
                 user.getCompany(),
                 new ArrayList<>());
     }
