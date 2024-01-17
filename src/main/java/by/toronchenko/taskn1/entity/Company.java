@@ -1,6 +1,9 @@
 package by.toronchenko.taskn1.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -19,7 +22,10 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long company_id;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
+    @NotNull
+    @NotBlank
+    @Size(max = 16)
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     @Builder.Default

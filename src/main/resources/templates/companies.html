@@ -7,6 +7,11 @@
 </head>
 <body>
     <div class="container">
+        <form action="/company/companies" method="get">
+            <label for="name">Find by name:</label>
+            <input type="text" id="name" name="name">
+            <button type="submit">Find</button>
+        </form>
         <div th:if="${not #lists.isEmpty(companies)}">
             <h2>Company List</h2>
             <table>
@@ -15,13 +20,28 @@
                     <th>Delete</th>
                     <th>Update</th>
                 </tr>
-                <tr th:each="company : ${companies}">
+                <tr th:each="company : ${companies.content}">
                     <td th:text="${company.name}">Name</td>
                     <td><a th:href="${ '/company/deleteCompany/' + company.company_id}">Delete</a></td>
                     <td><a th:href="${ '/company/updateCompany/' + company.company_id}">Update</a></td>
                 </tr>
             </table>
         </div>
+
+        <div>
+            <ul>
+                <li th:if="${companies.hasPrevious()}">
+                    <a th:href="${'/company/companies?page=' + (companies.getNumber() - 1) + '&name=' + name}">&lt; Previous</a>
+                </li>
+                <li th:each="i : ${maxPages}">
+                    <a th:href="${'/company/companies?page=' + i + '&name=' + name}" th:text="${i + 1}"></a>
+                </li>
+                <li th:if="${companies.hasNext()}">
+                    <a th:href="${'/company/companies?page=' + (companies.getNumber() + 1) + '&name=' + name}">Next &gt;</a>
+                </li>
+            </ul>
+        </div>
+
         <div class="link-container">
             <a href="/company/createCompany">Create Company</a><br>
             <a href="/user/users">Show users</a><br>

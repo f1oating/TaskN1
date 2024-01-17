@@ -1,6 +1,9 @@
 package by.toronchenko.taskn1.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Builder
@@ -15,7 +18,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
+    @NotNull
+    @NotBlank
+    @Size(max = 16)
     private String name;
     @Column(nullable = false)
     private String password;

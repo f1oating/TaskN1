@@ -2,11 +2,14 @@ package by.toronchenko.taskn1.controllers;
 
 import by.toronchenko.taskn1.dto.CompanyDto;
 import by.toronchenko.taskn1.entity.Company;
+import by.toronchenko.taskn1.entity.User;
 import by.toronchenko.taskn1.service.CompanyService;
 import by.toronchenko.taskn1.util.exception.NoCompanyFoundException;
 import by.toronchenko.taskn1.validators.CompanyValidator;
 import by.toronchenko.taskn1.validators.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +25,11 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping("/companies")
-    public String showUsers(Model model){
-        model.addAttribute("companies", companyService.findAllCompanies());
+    public String showUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "") String name, Model model){
+        Page<Company> companies = companyService.findPageCompaniesByName(PageRequest.of(page, 5), name);
+        model.addAttribute("companies", companies);
+        model.addAttribute("maxPages", companyService.pageSlicer(companies.getNumber(), companies.getTotalPages()));
+        model.addAttribute("name", name);
         return "companies";
     }
 

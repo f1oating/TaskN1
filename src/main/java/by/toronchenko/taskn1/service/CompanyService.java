@@ -10,10 +10,15 @@ import by.toronchenko.taskn1.util.exception.NoUserFoundException;
 import by.toronchenko.taskn1.validators.CompanyValidator;
 import by.toronchenko.taskn1.validators.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class CompanyService {
@@ -30,22 +35,26 @@ public class CompanyService {
                 : new CompanyDto(null, null, validationResult.getErrors());
     }
 
-    public Company findCompanyById(Long id) throws NoCompanyFoundException {
+    public Company findCompanyById(Long id) {
         return this.companyRepository.findById(id)
                 .orElseThrow(NoCompanyFoundException::new);
     }
 
-    public Iterable<Company> findAllCompanies(){
+    public List<Company> findAllCompanies(){
         return companyRepository.findAll();
     }
 
-    public void deleteCompanyById(Long id) throws NoCompanyFoundException {
+    public Page<Company> findPageCompaniesByName(PageRequest pageRequest, String name) {
+        return name != null && !name.isEmpty() ? companyRepository.findDistinctFirstByName(pageRequest, name) : companyRepository.findAll(pageRequest);
+    }
+
+    public void deleteCompanyById(Long id) {
         this.companyRepository.findById(id)
                 .orElseThrow(NoCompanyFoundException::new);
         this.companyRepository.deleteById(id);
     }
 
-    public void deleteCompany(Company company) throws NoCompanyFoundException {
+    public void deleteCompany(Company company) {
         this.companyRepository.findById(company.getCompany_id())
                 .orElseThrow(NoCompanyFoundException::new);
         companyRepository.delete(company);
@@ -55,6 +64,12 @@ public class CompanyService {
         return new CompanyDto(company.getCompany_id(),
                 company.getName(),
                 new ArrayList<>());
+    }
+
+    public List<Integer> pageSlicer(int page, int totalPages) {
+        return IntStream.rangeClosed(Math.max(0, page), Math.min(totalPages - 1, page + 1))
+                .boxed()
+                .collect(Collectors.toList());
     }
 
 }

@@ -9,7 +9,10 @@ import by.toronchenko.taskn1.util.exception.NoCompanyFoundException;
 import by.toronchenko.taskn1.util.exception.NoUserFoundException;
 import by.toronchenko.taskn1.validators.UserValidator;
 import by.toronchenko.taskn1.validators.ValidationResult;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +39,11 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String showUsers(Model model){
-        model.addAttribute("users", userService.findAllUsers());
+    public String showUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "") String name, Model model){
+        Page<User> users = userService.findPageUsersByName(PageRequest.of(page, 5), name);
+        model.addAttribute("users", users);
+        model.addAttribute("maxPages", userService.pageSlicer(users.getNumber(), users.getTotalPages()));
+        model.addAttribute("name", name);
         return "users";
     }
 
@@ -96,4 +102,5 @@ public class UserController {
         userService.deleteUserById(id);
         return "redirect:/user/users";
     }
+
 }
