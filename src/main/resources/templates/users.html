@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
@@ -48,7 +48,7 @@
 
     <div class="link-container">
         <a class="create-user" href="/user/createUser">Create User</a><br>
-        <a class="show-companies" href="/company/companies">Show companies</a><br>
+        <a sec:authorize="hasAuthority('ADMIN')" class="show-companies" href="/company/companies">Show companies</a><br>
     </div>
 </div>
 </body>

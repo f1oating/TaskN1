@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 
 @Builder
 @Data
@@ -24,7 +25,11 @@ public class User {
     @Size(max = 16)
     private String name;
     @Column(nullable = false)
+    @ColumnTransformer(read = "CONCAT('{noop}', password)")
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Role role = Role.USER;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;

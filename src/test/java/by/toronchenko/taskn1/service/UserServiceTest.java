@@ -2,6 +2,7 @@ package by.toronchenko.taskn1.service;
 
 import by.toronchenko.taskn1.dto.UserDto;
 import by.toronchenko.taskn1.entity.Company;
+import by.toronchenko.taskn1.entity.Role;
 import by.toronchenko.taskn1.entity.User;
 import by.toronchenko.taskn1.repositories.UserRepository;
 import by.toronchenko.taskn1.util.exception.NoCompanyFoundException;
@@ -48,10 +49,11 @@ class UserServiceTest {
 				.id(1L)
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 
-		UserDto userDto = new UserDto(1L, "Testoviy", "test", company, new ArrayList<>());
+		UserDto userDto = new UserDto(1L, "Testoviy", "test", Role.USER, company, new ArrayList<>());
 
 		when(userValidator.isValid(user)).thenReturn(new ValidationResult());
 		when(userRepository.save(user)).thenReturn(user);
@@ -70,13 +72,14 @@ class UserServiceTest {
 				.id(null)
 				.name("")
 				.password("")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 		ValidationResult validationResult = new ValidationResult();
 		validationResult.add(Error.of("invalid.login", "Login is empty!"));
 		validationResult.add(Error.of("invalid.password", "Password is empty!"));
 
-		UserDto userDto = new UserDto(null, null, null, null,validationResult.getErrors());
+		UserDto userDto = new UserDto(null, null, null, null, null, validationResult.getErrors());
 
 		when(userValidator.isValid(user)).thenReturn(validationResult);
 
@@ -95,6 +98,7 @@ class UserServiceTest {
 				.id(1L)
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 
@@ -119,6 +123,7 @@ class UserServiceTest {
 		User user = User.builder()
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 		Company company2 = Company.builder()
@@ -127,6 +132,7 @@ class UserServiceTest {
 		User user2 = User.builder()
 				.name("Testoviy2")
 				.password("test2")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 		company2.addUser(user2);
@@ -147,6 +153,7 @@ class UserServiceTest {
 		User user = User.builder()
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 		List<User> users = new ArrayList<>();
@@ -166,6 +173,7 @@ class UserServiceTest {
 		User user = User.builder()
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 		Company company2 = Company.builder()
@@ -174,6 +182,7 @@ class UserServiceTest {
 		User user2 = User.builder()
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 		company2.addUser(user2);
@@ -197,6 +206,7 @@ class UserServiceTest {
 				.id(1L)
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 
@@ -221,6 +231,7 @@ class UserServiceTest {
 				.id(1L)
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 
@@ -239,6 +250,7 @@ class UserServiceTest {
 				.id(10L)
 				.name("Testoviy")
 				.password("test")
+				.role(Role.USER)
 				.build();
 		company.addUser(user);
 
